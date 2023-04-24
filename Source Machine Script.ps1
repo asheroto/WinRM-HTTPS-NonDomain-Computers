@@ -14,8 +14,13 @@ $target_url = "https://" + $target_hostname + ":5986/wsman"
 
 # Append hostname to trusted hosts list
 Write-Output ""
-Write-Output "Appending $target_hostname to Trusted Hosts list"
-Set-Item WSMan:\localhost\Client\TrustedHosts -Value "$target_hostname" -Concatenate -Force
+# If the Trusted Hosts contains an asterisk, skip this part
+if ((Get-Item WSMan:\localhost\Client\TrustedHosts).Value -notcontains "*") {
+	Write-Output "Appending hostname to Trusted Hosts list"
+	Set-Item WSMan:\localhost\Client\TrustedHosts -Value "$target_hostname" -Concatenate -Force
+} else {
+	Write-Output "Trusted Hosts list already contains an asterisk, so the hostname will not be appended"
+}
 Write-Output ""
 Write-Output "Currently Trusted Hosts:"
 (Get-Item WSMan:\localhost\Client\TrustedHosts).Value
