@@ -1,12 +1,9 @@
-# WinRM-HTTPS-NonDomain-Computers
-# Version 0.0.1
-
 # Intro
 Clear-Host
-Write-Host "Run this on the SOURCE machine - the computer you are connecting from"
-Write-Host ""
-Write-Host "Running this script as Administrator is optional"
-Write-Host ""
+Write-Output "Run this on the SOURCE machine - the computer you are connecting from"
+Write-Output ""
+Write-Output "Running this script as Administrator is optional"
+Write-Output ""
 pause
 Clear-Host
 
@@ -14,6 +11,14 @@ Clear-Host
 $target_hostname = Read-Host "Enter target hostname"
 $target_username = Read-Host "Enter target username you'll use to authenticate (Administrator?)"
 $target_url = "https://" + $target_hostname + ":5986/wsman"
+
+# Append hostname to trusted hosts list
+Write-Output ""
+Write-Output "Appending $target_hostname to Trusted Hosts list"
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "$target_hostname" -Concatenate -Force
+Write-Output ""
+Write-Output "Currently Trusted Hosts:"
+(Get-Item WSMan:\localhost\Client\TrustedHosts).Value
 
 # Explanation to save certificate
 Write-Output ""

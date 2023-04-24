@@ -1,23 +1,20 @@
-# WinRM-HTTPS-NonDomain-Computers
-# Version 0.0.1
-
 # Intro
 Clear-Host
-Write-Host "Run this on the TARGET machine - the computer you want to connect to"
-Write-Host "MUST RUN THIS SCRIPT AS ADMINISTRATOR"
-Write-Host ""
-Write-Host "This script will:"
-Write-Host "- Set the category of your network adapters to Private"
-Write-Host "- Create the necessary firewall rules"
-Write-Host "- Generate a self-signed certificate"
-Write-Host "- Enable WinRM and create a WinRM HTTPS listener"
-Write-Host ""
+Write-Output "Run this on the TARGET machine - the computer you want to connect to"
+Write-Output "MUST RUN THIS SCRIPT AS ADMINISTRATOR"
+Write-Output ""
+Write-Output "This script will:"
+Write-Output "- Set the category of your network adapters to Private"
+Write-Output "- Create the necessary firewall rules"
+Write-Output "- Generate a self-signed certificate"
+Write-Output "- Enable WinRM and create a WinRM HTTPS listener"
+Write-Output ""
 pause
 Clear-Host
 
 # Set network adapter category
-$networkListManager = [Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]"{DCB00C01-570F-4A9B-8D69-199FDBA5723B}")) 
-$connections = $networkListManager.GetNetworkConnections() 
+$networkListManager = [Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]"{DCB00C01-570F-4A9B-8D69-199FDBA5723B}"))
+$connections = $networkListManager.GetNetworkConnections()
 $connections | ForEach-Object { $_.GetNetwork().SetCategory(1) }
 
 # Create firewall rule
