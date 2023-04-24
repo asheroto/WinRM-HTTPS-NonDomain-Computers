@@ -16,6 +16,27 @@ Follow these instructions and the scripts will explain further.
 - **Target** - Computer you are connecting to (usually a user's computer or server)
 
 ## Instructions:
- 1. Run `Target Computer Script.ps1` on the **Target**
+ 1. Run `Target Computer Script.ps1` on the **Target** and execute the command at the end of the script as instructed
  2. Restart the **Target** afterwards
- 3. Run `Source Computer Script.ps1` on the **Source**
+ 3. Run `Source Computer Script.ps1` on the **Source** and perform the steps as instructed in the script
+
+---
+
+## Other useful WinRM related commands
+
+### Get trusted hosts:
+`Get-Item WSMan:\localhost\Client\TrustedHosts`
+
+### Trust all hosts:
+`Set-Item WSMan:localhost\client\trustedhosts -Value *`
+
+### Set trusted hosts:
+`Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'machineA,machineB'`
+
+### Append trusted hosts:
+`Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'machineC' -Concatenate`
+
+### Remove a trusted host:
+1. Get the list of trusted hosts
+2. Adjust the command separated list as needed, removing the unneeded host
+3. Use the commands to set the trusted hosts
