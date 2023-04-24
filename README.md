@@ -19,6 +19,7 @@ Follow these instructions and the scripts will explain further.
  1. Run `Target Computer Script.ps1` on the **Target** and execute the command at the end of the script as instructed
  2. Restart the **Target** afterwards
  3. Run `Source Computer Script.ps1` on the **Source** and perform the steps as instructed in the script
+    1. **Note:** This script will automatically add the machine to the list of trusted hosts.
 
 ---
 
