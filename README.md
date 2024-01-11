@@ -77,13 +77,13 @@ These two little scripts make this whole process easy.
 
 ## Rationale
 
-### Why not use HTTP at home?
+### Why not use HTTP at my home / small office?
 
 HTTP is insecure because information is transmitted in plain text over the network (unencrypted). In terms of WinRM, it means anyone can see the data you're sending and receiving. This is a security risk, and is not recommended.
 
 "I shouldn't use HTTP even in my own home?"
 
-Correct! I avoid using HTTP if at all possible, even at home. If you're using WinRM at home, you may be using it to manage a server or another computer. Sure, you may trust the other people in your home, but do you trust all of the other devices in your home? What about that smart TV, or that smart fridge? What about that smart lightbulb? Although it's unlikely, if a bad actor had access to one of these device through say, some cloud-connected management system, it could be possible to intercept WinRM traffic, see what you're doing, then gain access to your computers, servers, and data. With additional lateral movement, who knows, they could even gain access to your bank account. Again, it's unlikely, but it's technically possible.
+Correct! I avoid using HTTP if at all possible, even at home or a small office. Sure, you may trust the other people in your home, but do you trust all of the other devices in your home? What about that [smart TV](https://www.tomsguide.com/news/tcl-wolf-dhs-china-bashing), or that [smart fridge](https://www.newsweek.com/how-cyber-thieves-use-your-smart-fridge-door-your-data-1603488)? What about that [smart lightbulb](https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/researchers-use-smart-light-bulbs-to-infiltrate-networks)? Although it's unlikely, if a bad actor had access to one of these device through say, some cloud-connected management system, it could be possible to intercept WinRM traffic, see what you're doing, then gain access to your computers, servers, and data. With additional lateral movement, who knows, they could even gain access to your bank account. Again, it's unlikely, but it's technically possible.
 
 ### Why generate a new self-signed certificate?
 
