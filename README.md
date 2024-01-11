@@ -1,6 +1,8 @@
 # Automatically Configure WinRM with HTTPS
 
-By default, all computers are in a workgroup. If you're using a personal computer, then you're on a workgroup (non-domain computer). Most offices use a Windows domain, which helps with managing computers and users. Using WinRM on domain-joined computers is easy, but trying to configure WinRM on non-domain computers is a bit more complicated. You need to configure WinRM, its listener, firewall rules, an HTTPS certificate, and figure out the right commands to use.
+[WinRM](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) is a great tool for remotely managing Windows computers. It's built into Windows, and is easy to use. However, its configuration is not straightforward.
+
+By default, all computers are in a workgroup. If you're using a personal computer, then you're on a workgroup. Most offices use a Windows domain, which helps with managing computers and users. Using WinRM on domain-joined computers is easy, but trying to configure WinRM on non-domain computers is a bit more complicated. You need to configure WinRM, its listener, firewall rules, an HTTPS certificate, and figure out the right commands to use. Sometimes `winrm quickconfig` has a bad day. 😆
 
 These two little scripts make this whole process easy.
 
@@ -49,12 +51,11 @@ Automatically configures WinRM HTTPS on a target machine, and downloads the cert
 
 ## Instructions
 
-1. Run `Target Computer Script.ps1` on the **Target** and execute the command at the end of the script as instructed
-2. Run `Source Computer Script.ps1` on the **Source** and perform the steps as instructed in the script
+1. Run `Target Machine Script.ps1` on the **Target** and execute the command at the end of the script as instructed
+2. Run `Source Machine Script.ps1` on the **Source** and perform the steps as instructed in the script
 
-## Troubleshooting
-
-As always, restart the computers and try again. If that doesn't work, please check if there is an [Issue](https://github.com/asheroto/WinRM-HTTPS-NonDomain-Computers/issues) already open for your problem. If not, please open a new Issue.
+> [!WARNING]
+> After running the source machine script, Make sure to adjust your Windows Firewall settings under the `Windows Remote Management (HTTPS-In)` rule to restrict access to the target machine as needed. By default, the rule allows all IP addresses to connect to the target machine. Other default rules are disabled.
 
 ## Useful WinRM related commands
 
@@ -93,3 +94,29 @@ Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'machineC' -Concatenate
 1. Get the list of trusted hosts
 2. Adjust the command separated list as needed, removing the unneeded host
 3. Use the commands to set the trusted hosts
+
+### Enumerate WinRM listeners:
+
+```powershell
+winrm enumerate winrm/config/listener
+```
+
+### Check the state of configuration settings:
+
+```powershell
+winrm get winrm/config
+```
+
+## Links
+
+[WinRM on Wikipedia](https://en.wikipedia.org/wiki/Windows_Remote_Management)
+[Installation and Configuration for Windows Remote Management](https://docs.microsoft.com/en-us/windows/win32/winrm/installation-and-configuration-for-windows-remote-management)
+[WinRM Guide](https://www.comparitech.com/net-admin/winrm-guide/)
+
+## Troubleshooting
+
+As always, restart the computer (both) and try again. 🤓
+
+## Contributing
+
+If you'd like to help develop this project: fork the repo, edit, then submit a pull request. 😊
