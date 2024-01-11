@@ -51,11 +51,12 @@ Automatically configures WinRM HTTPS on a target machine, and downloads the cert
 
 ## Instructions
 
+> [!WARNING]
+> Do **NOT** expose a machine with WinRM enabled to the internet. WinRM is not designed to be secure enough for internet use. If you need to access a machine over the internet, use a VPN.
+
 1. Run `Target Machine Script.ps1` on the **Target** and execute the command at the end of the script as instructed
 2. Run `Source Machine Script.ps1` on the **Source** and perform the steps as instructed in the script
-
-> [!WARNING]
-> After running the source machine script, Make sure to adjust your Windows Firewall settings under the `Windows Remote Management (HTTPS-In)` rule to restrict access to the target machine as needed. By default, the rule allows all IP addresses to connect to the target machine. Other default rules are disabled.
+   - After running the source machine script, Make sure to adjust your Windows Firewall settings under the `Windows Remote Management (HTTPS-In)` rule to restrict access to the target machine as needed. By default, the rule allows all IP addresses to connect to the target machine. Other default rules are disabled.
 
 ## Useful WinRM related commands
 
