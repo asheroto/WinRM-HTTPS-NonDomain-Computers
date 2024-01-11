@@ -173,7 +173,6 @@ winrm get winrm/config
 -   Add a check for the WinRM service
 -   More options for security on firewall, listener configuration, and certificate creation
 -   Ability to use existing certificate, listener, and/or firewall rule
--   Removal of self-signed certificate, detection of existing computer certificate
 
 ## Contributing
 
