@@ -1,47 +1,90 @@
+#Requires -RunAsAdministrator
+
+# WinRM HTTPS Configuration Script
+# This script will configure WinRM HTTPS on the source machine
+
 # Intro
 Clear-Host
-Write-Output "Run this on the SOURCE machine - the computer you are connecting from"
+Write-Output "Source Machine Script"
+Write-Output "---------------------"
+Write-Output "Run this script second on the source machine, after running the target machine script on the target machine"
+Write-Output "This script should be ran on the computer you are connecting from"
 Write-Output ""
-Write-Output "Running this script as Administrator is optional"
+Write-Output "This script will do the following:"
+Write-Output "- Prompt for the target hostname, and download the certificate"
+Write-Output "- Import the certificate into the Trusted Root Certification Authorities store"
+Write-Output "- Show you the command to connect to the target machine"
+Write-Output "- Optionally test the connection"
 Write-Output ""
-pause
-Clear-Host
+Pause
 
 # Gather info and build URL
+Write-Output ""
 $target_hostname = Read-Host "Enter target hostname"
+
+# If not specified throw error
+if ($target_hostname -eq "") {
+    throw "Target hostname is required"
+}
+
 $target_username = Read-Host "Enter target username you'll use to authenticate (Administrator?)"
+# If not specified use Administrator
+if ($target_username -eq "") {
+    $target_username = "Administrator"
+}
 $target_url = "https://" + $target_hostname + ":5986/wsman"
 
+# Convert hostname to lowercase
+$target_hostname = $target_hostname.ToLower()
+
 # Append hostname to trusted hosts list
+$currentTrustedHosts = (Get-Item WSMan:\localhost\Client\TrustedHosts).Value
+
 Write-Output ""
-# If the Trusted Hosts contains an asterisk, skip this part
-if ((Get-Item WSMan:\localhost\Client\TrustedHosts).Value -notcontains "*") {
-	Write-Output "Appending hostname to Trusted Hosts list"
-	Set-Item WSMan:\localhost\Client\TrustedHosts -Value "$target_hostname" -Concatenate -Force
+Write-Output "Appending $target_hostname to Trusted Hosts list"
+
+# Check if hostname already exists in Trusted Hosts
+if ($currentTrustedHosts -like "*$target_hostname*") {
+    Write-Output "$target_hostname is already in the Trusted Hosts list."
 } else {
-	Write-Output "Trusted Hosts list already contains an asterisk, so the hostname will not be appended"
+    Set-Item WSMan:\localhost\Client\TrustedHosts -Value "$target_hostname" -Concatenate -Force
+    Write-Output "$target_hostname added to Trusted Hosts."
 }
+
 Write-Output ""
 Write-Output "Currently Trusted Hosts:"
 (Get-Item WSMan:\localhost\Client\TrustedHosts).Value
 
-# Explanation to save certificate
-Write-Output ""
-Write-Output "- A web browser will open"
-Write-Output "- Save/export/copy the certificate (may be under Details tab of certificate) into CER format"
-Write-Output "- Come back to this window afterwards"
-Write-Output ""
-pause
-Start-Process $target_url
+# Connect and save certificate
+try {
+    Write-Output "Downloading certificate from $target_url"
+    $tcpClient = New-Object Net.Sockets.TcpClient($target_hostname, 5986)
+    $sslStream = New-Object Net.Security.SslStream($tcpClient.GetStream(), $false, { $true })
+    $sslStream.AuthenticateAsClient($target_hostname)
+    $certificate = $sslStream.RemoteCertificate
+    $x509Cert = New-Object Security.Cryptography.X509Certificates.X509Certificate2($certificate)
+    $certPath = New-TemporaryFile
+    [IO.File]::WriteAllBytes($certPath, $x509Cert.Export([Security.Cryptography.X509Certificates.X509ContentType]::Cert))
+    Write-Output ""
+    Write-Output "Certificate saved to temp folder"
+    $sslStream.Close()
+    $tcpClient.Close()
+} catch {
+    throw "An error occurred while retrieving the certificate: $_"
+}
 
-# Explanation to import certificate
+# Import the certificate using .NET
 Write-Output ""
-Write-Output "- Double-click on the certificate exported to install it"
-Write-Output "- Install/import the certificate into the Local Machine store location"
-Write-Output "- Place certificate inside Trusted Root Certification Authorities store"
-Write-Output "- Come back to this window afterwards"
+Write-Output "Importing certificate into Trusted Root Certification Authorities store"
+$certStore = New-Object System.Security.Cryptography.X509Certificates.X509Store("Root", "LocalMachine")
+$certStore.Open("ReadWrite")
+$certStore.Add($x509Cert)
+$certStore.Close()
+
+# Remove the certificate
 Write-Output ""
-pause
+Write-Output "Removing certificate from temp folder"
+Remove-Item $certPath
 
 # Explanation to connect
 Write-Output ""
@@ -49,10 +92,15 @@ Write-Output "- Connect using this command:"
 Write-Output "      Enter-PSSession $target_hostname -UseSSL -Credential $target_username"
 Write-Output ""
 
+# Test command
+$doConnect = Read-Host "Do you want to test the connection? (y/n)"
+if ($doConnect -eq "y") {
+    Write-Output ""
+    Write-Output "Testing connection..."
+    Enter-PSSession $target_hostname -UseSSL -Credential $target_username
+}
+
 # Troubleshooting
-Write-Output "- If you get an error when connecting, make sure you only have ONE certificate for the hostname"
-Write-Output "- You must launch MMC and add the Certificates snap-in under the Computer Account to see the certs"
-Write-Output "- Check the Trusted Root Certification Authorities store and delete any EXTRA certificates, don't delete anything else"
 Write-Output ""
-Write-Output "- Restart the machine if you have trouble"
-Write-Output ""
+Write-Output "If you cannot connect, please restart both computers and try again."
+Write-Output "Please open an issue on GitHub if you have any questions or problems."

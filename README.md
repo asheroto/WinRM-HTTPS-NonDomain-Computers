@@ -1,43 +1,91 @@
-# **HTTPS with WinRM on Non-Domain Computers**
+# **Configure WinRM with HTTPS on Non-Domain Computers**
+
+## Why do I need this?
+
+On domain-joined computers, this process is a lot easier. But using WinRM on non-domain computers is a bit more complicated. You need to configure the firewall, create a certificate, and configure WinRM to use HTTPS.
+
 These two little scripts make this whole process easy.
 
-Automatically configure firewall rules, SSL certificates, and obtain a command to connect.
+## What does this do?
 
-Follow these instructions and the scripts will explain further.  
+Automatically configures WinRM HTTPS on a target machine, and downloads the certificate to the source machine.
+
+## Terms
+
+-   **Source** - Computer you are connecting from (usually an Administrator computer)
+-   **Target** - Computer you are connecting to (usually a server or another user's computer)
 
 ## Requirements:
-- PowerShell
-- Administrative rights
-- LAN connectivity between computers (or via VPN)
-- Port Forwarding possible but not recommended due to security risks
 
-## Terms:
-- **Source** - Computer you are connecting from (usually an Administrator computer)
-- **Target** - Computer you are connecting to (usually a user's computer or server)
+-   PowerShell, preferably PowerShell 7 or higher
+-   Administrative rights
+-   LAN/VPN connectivity between the Source and Target
+-   Windows 10/11 or Windows Server 2016/2019/2022
 
-## Instructions:
- 1. Run `Target Computer Script.ps1` on the **Target** and execute the command at the end of the script as instructed
- 2. Restart the **Target** afterwards
- 3. Run `Source Computer Script.ps1` on the **Source** and perform the steps as instructed in the script
-    1. **Note:** This script will automatically add the machine to the list of trusted hosts.
+## Script Functionality
 
----
+### `Target Machine Script.ps1`
 
-## Other useful WinRM related commands
+-   Show you a list of network adapters and their categories
+-   Allow you to select a network adapter to change to Private
+-   Enable WinRM
+-   Disable all default WinRM Rules
+-   Create a firewall rule to allow WinRM HTTPS traffic on port 5986 from any IP address
+-   Disable the HTTP listener if it exists
+-   Create a self-signed HTTPS certificate
+-   Create a WinRM HTTPS listener
+-   Restart the WinRM service
+
+### `Source Machine Script.ps1`
+
+-   Prompt for the target hostname, and download the certificate
+-   Import the certificate into the Trusted Root Certification Authorities store
+-   Show you the command to connect to the target machine
+-   Optionally test the connection
+
+## Instructions
+
+1. Run `Target Computer Script.ps1` on the **Target** and execute the command at the end of the script as instructed
+2. Run `Source Computer Script.ps1` on the **Source** and perform the steps as instructed in the script
+
+## Troubleshooting
+
+As always, restart the computers and try again. If that doesn't work, please check if there is an [Issue](https://github.com/asheroto/WinRM-HTTPS-NonDomain-Computers/issues) already open for your problem. If not, please open a new Issue.
+
+## Useful WinRM related commands
 
 ### Get trusted hosts:
-`Get-Item WSMan:\localhost\Client\TrustedHosts`
+
+```powershell
+Get-Item WSMan:\localhost\Client\TrustedHosts
+```
+
+or just the values
+
+```powershell
+(Get-Item WSMan:\localhost\Client\TrustedHosts).Value
+```
 
 ### Trust all hosts:
-`Set-Item WSMan:localhost\client\trustedhosts -Value *`
+
+```powershell
+Set-Item WSMan:localhost\client\trustedhosts -Value *
+```
 
 ### Set trusted hosts:
-`Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'machineA,machineB'`
+
+```powershell
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'machineA,machineB'
+```
 
 ### Append trusted hosts:
-`Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'machineC' -Concatenate`
+
+```powershell
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'machineC' -Concatenate
+```
 
 ### Remove a trusted host:
+
 1. Get the list of trusted hosts
 2. Adjust the command separated list as needed, removing the unneeded host
 3. Use the commands to set the trusted hosts
