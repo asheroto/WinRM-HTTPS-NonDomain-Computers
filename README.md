@@ -85,6 +85,8 @@ HTTP is insecure because information is transmitted in plain text over the netwo
 
 Correct! I avoid using HTTP if at all possible, even at home or a small office. Sure, you may trust the other people in your home, but do you trust all of the other devices in your home? What about that [smart TV](https://www.tomsguide.com/news/tcl-wolf-dhs-china-bashing), or that [smart fridge](https://www.newsweek.com/how-cyber-thieves-use-your-smart-fridge-door-your-data-1603488)? What about that [smart lightbulb](https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/researchers-use-smart-light-bulbs-to-infiltrate-networks)? Although it's unlikely, if a bad actor had access to one of these device through say, some cloud-connected management system, it could be possible to intercept WinRM traffic, see what you're doing, then gain access to your computers, servers, and data. With additional lateral movement, who knows, they could even gain access to your bank account. Again, it's unlikely, but it's technically possible.
 
+While HTTPS doesn't offer foolproof security, it's undeniably a step in the right direction and a prudent practice to adopt. This habit is particularly beneficial for system administrators and IT professionals. It helps in reducing the chances of bad actors intercepting traffic and gaining insights.
+
 ### Why generate a new self-signed certificate?
 
 ![self-signed certificate](https://github.com/asheroto/WinRM-HTTPS-NonDomain-Computers/assets/49938263/5c2e2ed3-4e83-4461-97d6-3f395b7381a1)
