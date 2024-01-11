@@ -29,7 +29,16 @@ if ($target_hostname -eq "") {
     throw "Target hostname is required"
 }
 
-$target_username = Read-Host "Enter target username you'll use to authenticate (Administrator?)"
+# Verify connection to target
+Write-Output "Verifying connection to $target_hostname"
+if (Test-Connection -ComputerName $target_hostname -Count 1 -Quiet) {
+    Write-Output "Connection to $target_hostname successful"
+} else {
+    Write-Warning "Connection to $target_hostname failed. Make sure you can ping the target machine."
+    exit
+}
+
+$target_username = Read-Host "Enter target username you'll use to authenticate [Administrator]"
 # If not specified use Administrator
 if ($target_username -eq "") {
     $target_username = "Administrator"
@@ -47,7 +56,7 @@ Write-Output "Appending $target_hostname to Trusted Hosts list"
 
 # Check if hostname already exists in Trusted Hosts
 if ($currentTrustedHosts -like "*$target_hostname*") {
-    Write-Output "$target_hostname is already in the Trusted Hosts list."
+    Write-Output "$target_hostname is already in the Trusted Hosts list"
 } else {
     Set-Item WSMan:\localhost\Client\TrustedHosts -Value "$target_hostname" -Concatenate -Force
     Write-Output "$target_hostname added to Trusted Hosts."
@@ -72,7 +81,10 @@ try {
     $sslStream.Close()
     $tcpClient.Close()
 } catch {
-    throw "An error occurred while retrieving the certificate: $_"
+    Write-Warning "An error occurred while retrieving the certificate: $_"
+    Write-Warning "Are you sure there is no connectivity issues between the two machines? Third-party firewall?"
+    Write-Warning "If the issue persists, please open an issue on GitHub."
+    exit
 }
 
 # Import the certificate using .NET

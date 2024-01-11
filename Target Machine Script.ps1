@@ -41,11 +41,12 @@ $selectedAdapter = $adapters[$selectedNumber - 1]
 
 # Check if the user selection is valid
 if ($null -ne $selectedAdapter) {
-    Write-Output "Changing the category of $($selectedAdapter.InterfaceAlias) to Private..."
+    Write-Output "Changing the category of $($selectedAdapter.InterfaceAlias) to Private"
     Set-NetConnectionProfile -InterfaceAlias $selectedAdapter.InterfaceAlias -NetworkCategory Private
-    Write-Output "Network category changed successfully."
+    Write-Output "Network category changed successfully"
 } else {
-    throw "Invalid selection. No changes made."
+    Write-Warning "Invalid selection. No changes made."
+    exit
 }
 
 # Ensure default Windows Firewall rule exists so that Enable-PSRemoting works
@@ -68,7 +69,7 @@ $rules = Get-NetFirewallRule -DisplayName "Windows Remote Management*" | Where-O
 if ($rules) {
     $rules | ForEach-Object { Disable-NetFirewallRule -DisplayName $_.DisplayName }
 } else {
-    Write-Output "No active Windows Firewall rules for WinRM were found."
+    Write-Output "No active Windows Firewall rules for WinRM were found"
 }
 
 # Create firewall rule
@@ -80,9 +81,9 @@ Write-Output "Disabling the HTTP listener"
 $commandOutput = & winrm enumerate winrm/config/Listener | Select-String -Pattern "Transport = HTTP"
 if ($commandOutput) {
     & winrm delete winrm/config/Listener?Address=*+Transport=HTTP
-    Write-Output "HTTP listener disabled successfully."
+    Write-Output "HTTP listener disabled successfully"
 } else {
-    Write-Output "No HTTP listener found."
+    Write-Output "No HTTP listener found"
 }
 
 # Create self-signed certificate
@@ -99,21 +100,23 @@ $commandArguments = "create", "winrm/config/Listener?Address=*+Transport=HTTPS",
 try {
     $commandOutput = & winrm $commandArguments 2>&1
     if ($commandOutput -match "-2144108493 0x80338033") {
-        Write-Warning "A WinRM HTTPS listener already exists. Recreating it..."
+        Write-Warning "A WinRM HTTPS listener already exists. Recreating it."
         & winrm delete winrm/config/Listener?Address=*+Transport=HTTPS
         $commandOutput = & winrm $commandArguments 2>&1
-        Write-Output "Listener recreated successfully."
+        Write-Output "Listener recreated successfully"
     }
 
     # Verify if the listener was created/recreated successfully
     $listener = winrm enumerate winrm/config/Listener
     if ($listener -match "Transport\s+= HTTPS" -and $listener -match "Hostname\s+= $target_hostname") {
-        Write-Output "Listener created successfully."
+        Write-Output "Listener created successfully"
     } else {
-        throw "Failed to verify the listener creation."
+        Write-Warning "Failed to verify the listener creation. Something went wrong here. Please open an issue on GitHub."
+        exit
     }
 } catch {
-    throw "An error occurred: $_"
+    Write-Warning "An error occurred: $_"
+    exit
 }
 
 # Restart WinRM service
