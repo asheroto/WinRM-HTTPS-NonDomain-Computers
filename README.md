@@ -1,12 +1,14 @@
-# **Automatically Configure WinRM with HTTPS **
+# Automatically Configure WinRM with HTTPS
 
-Designed for use on non-domain joined computers.
-
-## Why do I need this?
-
-On domain-joined computers, this process is a lot easier. But using WinRM on non-domain computers is a bit more complicated. You need to configure the firewall, create a certificate, and configure WinRM to use HTTPS.
+By default, all computers are in a workgroup. If you're using a personal computer, then you're on a workgroup (non-domain computer). Most offices use a Windows domain, which helps with managing computers and users. Using WinRM on domain-joined computers is easy, but trying to configure WinRM on non-domain computers is a bit more complicated. You need to configure WinRM, its listener, firewall rules, an HTTPS certificate, and figure out the right commands to use.
 
 These two little scripts make this whole process easy.
+
+## Target audience
+
+-   You want to use WinRM at home or at work, but don't want to use HTTP
+-   You want to use WinRM with HTTPS, but don't have a Windows domain server
+-   You're getting crazy errors when trying to use WinRM with HTTPS
 
 ## What does this do?
 
