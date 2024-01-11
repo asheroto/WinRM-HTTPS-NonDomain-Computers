@@ -1,4 +1,6 @@
-# **Configure WinRM with HTTPS on Non-Domain Computers**
+# **Automatically Configure WinRM with HTTPS **
+
+Designed for use on non-domain joined computers.
 
 ## Why do I need this?
 
