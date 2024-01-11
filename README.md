@@ -30,6 +30,8 @@ These two little scripts make this whole process easy.
 -   WinRM uses port 5985 for HTTP and port 5986 for HTTPS.
 -   You can change the ports if you want, but it's not recommended.
 -   For HTTPS connections, WinRM listens on `https://HOSTNAME:5986/wsman`.
+-   Below is a _very_ simplified representation of WinRM's network traversal so you can understand what's happening when you initiate a WinRM connection from PowerShell. Certain steps are omitted for simplicity such as the source computer, TLS/SSL negotiation, etc.
+    ![WinRM traversal](https://github.com/asheroto/WinRM-HTTPS-NonDomain-Computers/assets/49938263/ef3d998c-86a1-4321-a3b4-08c23b6179c4)
 
 ## Requirements
 
@@ -166,8 +168,6 @@ winrm get winrm/config
     -   If you don't see a listener, then for some reason the `Target-Machine.ps1` script failed to create it.
     -   You can try running the script again, or manually creating the listener.
     -   If you see an error message please [open an issue](issues) and include the full error message so that that script can be improved.
--   Below is a _very_ simplified representation of WinRM's network traversal so you can understand what's happening when you initiate a WinRM connection from PowerShell. Certain steps are omitted for simplicity such as the source computer, TLS/SSL negotiation, etc.
-    ![WinRM traversal](https://github.com/asheroto/WinRM-HTTPS-NonDomain-Computers/assets/49938263/ef3d998c-86a1-4321-a3b4-08c23b6179c4)
 
 ## TODO
 
