@@ -1,6 +1,8 @@
 #Requires -RunAsAdministrator
 
 # WinRM HTTPS Configuration Script
+# Target Machine Script
+# Version 1.0.0
 # This script will configure WinRM HTTPS on the target machine
 
 # Intro
