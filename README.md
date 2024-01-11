@@ -151,12 +151,6 @@ winrm enumerate winrm/config/listener
 winrm get winrm/config
 ```
 
-## Links
-
--   [WinRM on Wikipedia](https://en.wikipedia.org/wiki/Windows_Remote_Management)
--   [Installation and Configuration for Windows Remote Management](https://docs.microsoft.com/en-us/windows/win32/winrm/installation-and-configuration-for-windows-remote-management)
--   [WinRM Guide](https://www.comparitech.com/net-admin/winrm-guide/)
-
 ## Troubleshooting
 
 -   As always, restart the computer (both) and try again. 🤓
@@ -184,3 +178,9 @@ winrm get winrm/config
 ## Contributing
 
 If you'd like to help develop this project: fork the repo, edit, then submit a pull request. 😊
+
+## Links
+
+-   [WinRM on Wikipedia](https://en.wikipedia.org/wiki/Windows_Remote_Management)
+-   [Installation and Configuration for Windows Remote Management](https://docs.microsoft.com/en-us/windows/win32/winrm/installation-and-configuration-for-windows-remote-management)
+-   [WinRM Guide](https://www.comparitech.com/net-admin/winrm-guide/)
