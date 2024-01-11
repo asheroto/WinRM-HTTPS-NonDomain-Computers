@@ -77,7 +77,7 @@ These two little scripts make this whole process easy.
 
 ## Rationale
 
-### Why not use HTTP?
+### Why not use HTTP at home?
 
 HTTP is insecure because information is transmitted in plain text over the network (unencrypted). In terms of WinRM, it means anyone can see the data you're sending and receiving. This is a security risk, and is not recommended.
 
