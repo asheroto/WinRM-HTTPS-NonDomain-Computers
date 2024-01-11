@@ -5,21 +5,24 @@
 # Version 1.0.0
 # This script will configure WinRM HTTPS on the target machine
 
+# Set variables
+$winrmHttpPort = 5985
+$winrmHttpsPort = 5986
+
 # Intro
 Clear-Host
 Write-Output "Target Machine Script"
 Write-Output "---------------------"
-Write-Output "Run this script first on the target machine, then run the source machine script"
-Write-Output "It should be run on the computer you are connecting to"
+Write-Output "Run this script on the target machine, then run Source-Machine.ps1 on the source machine"
 Write-Output ""
 Write-Output "This script will do the following:"
 Write-Output "- Show you a list of network adapters and their categories"
 Write-Output "- Allow you to select a network adapter to change to Private"
 Write-Output "- Enable WinRM"
 Write-Output "- Disable all default WinRM Rules"
-Write-Output "- Create a firewall rule to allow WinRM HTTPS traffic on port 5986 from any IP address"
+Write-Output "- Create a firewall rule to allow WinRM HTTPS traffic on port $winrmHttpsPort from any IP address"
 Write-Output "- Disable the HTTP listener if it exists"
-Write-Output "- Create a self-signed HTTPS certificate"
+Write-Output "- Create a self-signed HTTPS certificate (valid for 15 years)"
 Write-Output "- Create a WinRM HTTPS listener"
 Write-Output "- Restart the WinRM service"
 Write-Output ""
@@ -54,7 +57,7 @@ Write-Output "Ensuring the default Windows Firewall rule exists so configuration
 $rule = Get-NetFirewallRule -DisplayName "Windows Remote Management (HTTP-In)" -ErrorAction SilentlyContinue
 if ($null -eq $rule) {
     Write-Output "Creating the default Windows Firewall rule (will be disabled later in the script)"
-    New-NetFirewallRule -DisplayName "Windows Remote Management (HTTP-In)" -Direction Inbound -LocalPort 5985 -Protocol TCP -Action Allow -Enabled False | Out-Null
+    New-NetFirewallRule -DisplayName "Windows Remote Management (HTTP-In)" -Direction Inbound -LocalPort $winrmHttpPort -Protocol TCP -Action Allow -RemoteAddress LocalSubnet -Profile Private, Domain | Out-Null
 } else {
     Write-Output "The default Windows Firewall rule already exists (will be disabled later in the script)"
 }
@@ -73,8 +76,8 @@ if ($rules) {
 }
 
 # Create firewall rule
-Write-Output "Creating firewall rule to allow WinRM HTTPS traffic on port 5986 from any IP address"
-New-NetFirewallRule -DisplayName "Windows Remote Management (HTTPS-In)" -Direction Inbound -LocalPort 5986 -Protocol TCP -Action Allow | Out-Null
+Write-Output "Creating firewall rule to allow WinRM HTTPS traffic on port $winrmHttpsPort from local subnet on Private or Domain profiles"
+New-NetFirewallRule -DisplayName "Windows Remote Management (HTTPS-In)" -Direction Inbound -LocalPort $winrmHttpsPort -Protocol TCP -Action Allow -RemoteAddress LocalSubnet -Profile Private, Domain | Out-Null
 
 # Disable the HTTP listener if it exists
 Write-Output "Disabling the HTTP listener"
@@ -111,7 +114,7 @@ try {
     if ($listener -match "Transport\s+= HTTPS" -and $listener -match "Hostname\s+= $target_hostname") {
         Write-Output "Listener created successfully"
     } else {
-        Write-Warning "Failed to verify the listener creation. Something went wrong here. Please open an issue on GitHub."
+        Write-Warning "Failed to verify the listener creation. Some issue is interfering with the WinRM HTTPS listener creation."
         exit
     }
 } catch {
@@ -124,5 +127,6 @@ Write-Output "Restarting WinRM service"
 Restart-Service WinRM
 
 # Additional information and warnings
-Write-Warning "By default, the WinRM HTTPS listener will accept connections from any IP address."
-Write-Warning "You can restrict the IP addresses that can connect to by adjusting the Windows Firewall rules."
+Write-Output ("-" * 40)
+Write-Output "Done! Now Run Source-Machine.ps1 on the source machine"
+Write-Warning "By default, WinRM is accessible to all IP addresses in the local subnet. A username and password are required for connection, but for additional security, consider modifying the 'Windows Remote Management (HTTPS-In)' firewall rule."
