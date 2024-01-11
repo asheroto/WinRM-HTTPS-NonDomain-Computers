@@ -93,6 +93,10 @@ In future versions this functionality may be expanded to allow the use of existi
 
 [Kerberos authentication](https://www.upguard.com/blog/kerberos-authentication) is a great way to authenticate users and computers on a Windows domain. However, it's not available for non-domain computers. If you're using WinRM at home or at work on a non-domain computer, you can't use Kerberos authentication.
 
+### Why are you creating _new_ firewall rules?
+
+By creating new firewall rules rather than modifying existing ones, it allows us to ignore any potential misconfigurations or issues with existing rules. It also allows us to easily remove the rules if needed. Default rules are not deleted but simply disabled.
+
 ### Why not make this available on PowerShell Gallery?
 
 It will be soon!
