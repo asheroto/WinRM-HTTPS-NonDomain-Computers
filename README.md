@@ -109,9 +109,9 @@ winrm get winrm/config
 
 ## Links
 
-[WinRM on Wikipedia](https://en.wikipedia.org/wiki/Windows_Remote_Management)
-[Installation and Configuration for Windows Remote Management](https://docs.microsoft.com/en-us/windows/win32/winrm/installation-and-configuration-for-windows-remote-management)
-[WinRM Guide](https://www.comparitech.com/net-admin/winrm-guide/)
+- [WinRM on Wikipedia](https://en.wikipedia.org/wiki/Windows_Remote_Management)
+- [Installation and Configuration for Windows Remote Management](https://docs.microsoft.com/en-us/windows/win32/winrm/installation-and-configuration-for-windows-remote-management)
+- [WinRM Guide](https://www.comparitech.com/net-admin/winrm-guide/)
 
 ## Troubleshooting
 
