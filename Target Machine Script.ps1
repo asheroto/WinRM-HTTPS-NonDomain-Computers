@@ -60,10 +60,14 @@ if ($null -eq $rule) {
 Write-Output "Enabling WinRM"
 Enable-PSRemoting -Force
 
-# Disable default insecure WinRM Rules
+# Disable all WinRM Rules that are not currently disabled
 Write-Output "Disabling all default WinRM Rules"
-$rules = Get-NetFirewallRule -DisplayName "Windows Remote Management*" # Get all WinRM firewall rules starting with "Windows Remote Management"
-$rules | ForEach-Object { Disable-NetFirewallRule -DisplayName $_.DisplayName } # Disable all rules
+$rules = Get-NetFirewallRule -DisplayName "Windows Remote Management*" | Where-Object { $_.Enabled -eq "True" }
+if ($rules) {
+    $rules | ForEach-Object { Disable-NetFirewallRule -DisplayName $_.DisplayName }
+} else {
+    Write-Output "No active Windows Firewall rules for WinRM were found."
+}
 
 # Create firewall rule
 Write-Output "Creating firewall rule to allow WinRM HTTPS traffic on port 5986 from any IP address"
