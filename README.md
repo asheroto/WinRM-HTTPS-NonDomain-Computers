@@ -79,7 +79,11 @@ These two little scripts make this whole process easy.
 
 ### Why not use HTTP?
 
-HTTP is insecure. It's not encrypted, and it's not authenticated. This means that anyone can see the data you're sending, and anyone can send data to your computer. This is a huge security risk, and is not recommended.
+HTTP is insecure. It's not encrypted, and it's not authenticated. In terms of WinRM, it means anyone can see the data you're sending and receiving. This is a security risk, and is not recommended.
+
+But at home?
+
+Yes! Even at home. If you're using WinRM at home, you may be using it to manage a server or another computer. Sure, you may trust the other people in your home, but do you trust all of the other devices in your home? What about that smart TV, or that smart fridge? What about that smart lightbulb? Although it's unlikely, it could be possible for a malicious actor to intercept your WinRM traffic, see what you're doing, then gain access to your computers, servers, and data.
 
 ### Why generate a new self-signed certificate?
 
