@@ -23,7 +23,7 @@ Automatically configures WinRM HTTPS on a target machine, and downloads the cert
 
 ## Requirements:
 
--   PowerShell, preferably PowerShell 7 or higher
+-   PowerShell
 -   Administrative rights
 -   LAN/VPN connectivity between the Source and Target
 -   Windows 10/11 or Windows Server 2016/2019/2022
